@@ -1,24 +1,20 @@
 import base64
 import requests
-import openai
 from sentence_transformers import SentenceTransformer
+from io import BytesIO
+from database import getCollection
+
 from PIL import Image, ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-from io import BytesIO
+from dotenv import load_dotenv
+load_dotenv()
+
 from pymongoarrow.monkey import patch_all
 patch_all()
 
-from database import getCollection
-
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'}
 model = SentenceTransformer('clip-ViT-B-32')
-
-
-def getOpenAIEmbedding(text):
-    model_id = "text-embedding-ada-002"
-    embedding = openai.Embedding.create(input=text, model=model_id)['data'][0]['embedding']
-    return embedding
 
 def encodeAndFix(base64img):
    return model.encode(Image.open(BytesIO(base64.b64decode(base64img))),convert_to_numpy=True);
@@ -52,3 +48,9 @@ def enrich():
         coll.update_one({"_id" : doc["_id"]}, {"$set" : { "poster_blob" : base64image, "poster_embedding": img_encoding.tolist()}})
     
     print("Enrichment completed successfully!!!")
+
+
+if __name__ == "__main__":
+    enrich()
+    
+    print("Press ctrl-c to exit.")
