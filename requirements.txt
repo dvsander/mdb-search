@@ -2,4 +2,5 @@ pymongo
 python-dotenv
 sentence-transformers
 pymongoarrow
-Flask==2.2.2
+openai
+Flask==2.3.2

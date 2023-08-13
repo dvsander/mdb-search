@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from database import getCollection
-from controller import enrich
+from controller import getOpenAIEmbedding
 
 app = Flask(__name__)
 
@@ -34,7 +34,19 @@ def search():
                 }
             ])
         case 'similarText':
-            print("Not implemented yet.")
+            embedding = getOpenAIEmbedding(searchInput)
+            coll = getCollection()
+            docs = coll.aggregate([
+                {
+                    "$search": {
+                        "knnBeta": {
+                            "vector": embedding,
+                            "path": "plot_embedding",
+                            "k": 20
+                        }
+                    }
+                }
+            ])
 
     return render_template("home.html",movies=docs, searchInput=searchInput, searchOptions=searchOptions)
 

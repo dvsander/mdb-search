@@ -17,9 +17,18 @@ Some hilarious results I must say. Some would call it artificial intelligence AI
 Create a free cluster on MongoDB Atlas. Note this has 512MB data size limitation and will host around 2924 movies. Currently there are 3483 movie documents in the embedded_movies collection in the sample_mflix database and 21k+ movies in movies. You could run this example on the either collection if you want. If you have some credits feel free to run a paid cluster tier with larger disks.
 
 Ensure database access and network access allow you to make a connection to the database. Note down the connection string.
+
+## Environment variables
+
 Create a file `.env` in the project structure and put the connection string in:
 
     MDB_CONN="mongodb+srv://..."
+
+when you plan on using OpenAI embedding for similar text search, add your API key:
+
+    OPENAI_API_KEY=
+
+
 
 ## Install Python
 
