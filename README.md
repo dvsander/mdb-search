@@ -1,20 +1,16 @@
 # mdb-search
 
-Atlas Vector search adds vector database capabilities to MongoDB Atlas.
-
-MongoDB is a very popular document database giving you powerful transactional and analytical capabilities on structured and semi-structured data in a JSON-like structure, with a plethora of database indexing capabilities and aggregation/analytics.
-
-Atlas Search was added, embedding relevance search and scoring capabilities based on open-source Lucene indexes.
-
-This year, Atlas Vector Search allows you to store and manage unstructured data, such as text, images, or audio, in vector embeddings (high-dimensional vectors) to make it easy to find and retrieve similar objects quickly.
-
 In this project I combine operational data about movies, with a search bar for relevance search, together with Vector Search allowing to find similar movies based on the movie poster. For this, I use the `clip-ViT-B-32` model on the images and store the embeddings, as well as the picture inside my database. I choose to store everything inside the same document: the metadata, the pictures as base64, the embeddings. This is an excellent use of a document store and does not need additional query languages or services to operate. Everything is accessible with one API.
+
+Atlas Vector search adds vector database capabilities to MongoDB Atlas. MongoDB is a very popular document database giving you powerful transactional and analytical capabilities on structured and semi-structured data in a JSON-like structure, with a plethora of database indexing capabilities and aggregation/analytics.
+
+Atlas Search was added, embedding relevance search and scoring capabilities based on open-source Lucene indexes. This year, Atlas Vector Search allows you to store and manage unstructured data, such as text, images, or audio, in vector embeddings (high-dimensional vectors) to make it easy to find and retrieve similar objects quickly.
 
 Some hilarious results I must say. Some would call it artificial intelligence AI, I call it clever use of statistics.
 
 ## Set-up
 
-Create a free cluster on MongoDB Atlas. Note this has 512MB data size limitation and will host around 2924 movies. Currently there are 3483 movie documents in the embedded_movies collection in the sample_mflix database and 21k+ movies in movies. You could run this example on the either collection if you want. If you have some credits feel free to run a paid cluster tier with larger disks.
+Create a free cluster on MongoDB Atlas. Note this has 512MB data size limitation and will host around 2924 movies. Currently there are 3483 movie documents in the embedded_movies collection in the sample_mflix database and 21k+ movies in movies. You could run this example on either collection if you want. If you have some credits feel free to run a paid cluster tier with larger disks.
 
 Ensure database access and network access allow you to make a connection to the database. Note down the connection string.
 
@@ -27,8 +23,6 @@ Create a file `.env` in the project structure and put the connection string in:
 when you plan on using OpenAI embedding for similar text search, add your API key:
 
     OPENAI_API_KEY=
-
-
 
 ## Install Python
 
