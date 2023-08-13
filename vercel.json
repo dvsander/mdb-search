@@ -1,9 +1,5 @@
 {
-    "version": 2,
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "/app"
-        }
+    "rewrites": [
+      { "source": "/(.*)", "destination": "/app" }
     ]
-}
+  }

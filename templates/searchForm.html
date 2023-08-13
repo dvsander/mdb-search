@@ -1,21 +1,42 @@
 <div class="container border-bottom-5">
-    <div class="row">
-        <div class="col-3">
-            <p>Text search</p>
-        </div>
-        <div class="col-9">
-            <form action="/search" method="post">
+    <form action="/search" method="post">
+        <div class="row">
+            <div class="col-3">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="searchOptions" id="inlineRadio1" value="relevance"
+                        {% if searchOptions is not defined or searchOptions == "relevance"  %}
+                            checked="true"
+                        {% endif %}>
+                    <label class="form-check-label" for="searchRelevance">Relevance (Lucene)</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="searchOptions" id="inlineRadio2" value="similarText"
+                        {% if searchOptions == "similarText"  %}
+                                checked="true"
+                            {% endif %}>
+                    <label class="form-check-label" for="searchSimilar">Similar (Text OpenAI)</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="searchOptions" id="inlineRadio2" value="similarImage" disabled="true"
+                        {% if searchOptions == "similarImage"  %}
+                            checked="true"
+                        {% endif %}>
+                    <label class="form-check-label" for="searchSimilar">Similar (Image clip-ViT-B-3)</label>
+                  </div>
+            </div>
+            <div class="col-9">
                 <div class="row">
                     <div class="col-9">
-                        <input type="text" class="form-control" id="searchInput" name="searchInput" aria-describedby="searchInputHelp" value={{searchInput}}>
+                        <input type="text" class="form-control" id="searchInput" name="searchInput" value={{searchInput}}>
                     </div>
                     <div class="col-3">
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
-    </div>
+    </form>
+    
     {% if similarto %}
     <div class="row">
         <div class="col-3">
@@ -25,9 +46,9 @@
             {% with movie=similarto %}
                 {% include "movieTile.html" %}
             {% endwith %}
-        {% endif %}
         </div>
     </div>
+    {% endif %}
 </div>
 
 
