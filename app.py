@@ -27,6 +27,8 @@ def search():
                     }
                 }
             }
+        },{
+            "$limit": 20
         }
     ])
     return render_template("home.html",movies=docs, searchInput=searchInput)
