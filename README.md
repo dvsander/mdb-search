@@ -68,7 +68,7 @@ This is a Flask Python3 web-app.
 
 Start the Flask app
 
-    python app.py
+    flask --app app run
 
 You can access the web app at `http://localhost:5000`.
 
