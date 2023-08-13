@@ -1,51 +1,66 @@
-# mdb-search
+# Database search, Relevance search, Semantic embeddings search with MongoDB
 
-In this project I combine operational data about movies, with a search bar for relevance search, together with Vector Search allowing to find similar movies based on the movie poster. For this, I use the `clip-ViT-B-32` model on the images and store the embeddings, as well as the picture inside my database. I choose to store everything inside the same document: the metadata, the pictures as base64, the embeddings. This is an excellent use of a document store and does not need additional query languages or services to operate. Everything is accessible with one API.
+## Introduction
 
-Atlas Vector search adds vector database capabilities to MongoDB Atlas. MongoDB is a very popular document database giving you powerful transactional and analytical capabilities on structured and semi-structured data in a JSON-like structure, with a plethora of database indexing capabilities and aggregation/analytics.
+Offering a great user Search experience in applications can be difficult, but does not need to be.
 
-Atlas Search was added, embedding relevance search and scoring capabilities based on open-source Lucene indexes. This year, Atlas Vector Search allows you to store and manage unstructured data, such as text, images, or audio, in vector embeddings (high-dimensional vectors) to make it easy to find and retrieve similar objects quickly.
+This application combines several search techniques available in MongoDB on an operational dataset of movies. MongoDB is a very popular document database known for its powerful transactional and analytical capabilities on structured and semi-structured data in a JSON-like structure. The addition of relevance search and semantic vector search in the same platform and query language is very easy and simple to use, without much complexity.
 
-Some hilarious results I must say. Some would call it artificial intelligence AI, I call it clever use of statistics.
+Vector database stores unstructured data such as text, images, or audio, in vector embeddings (high-dimensional vectors) to make it easy to find and retrieve similar objects quickly. 
 
-## Set-up
+- transactional database search (`MongoDB`),
+- relevance search with MongoDB Atlas Search (`Lucene`),
+- semantic search with MongoDB Atlas Vector Search based on embeddings for text (`text-embedding-ada-002`),
+- semantic search with MongoDB Atlas Vector Search based on embeddings for images (`clip-ViT-B-32`),
 
-Create a free cluster on MongoDB Atlas. Note this has 512MB data size limitation and will host around 2924 movies. Currently there are 3483 movie documents in the embedded_movies collection in the sample_mflix database and 21k+ movies in movies. You could run this example on either collection if you want. If you have some credits feel free to run a paid cluster tier with larger disks.
+Atlas Search allows relevance search and scoring capabilities based on open-source Lucene indexes. Here, I use it to search relevant movies with language support and typo correction.
+![Relevance search](static/searchRelevance.png)
 
-Ensure database access and network access allow you to make a connection to the database. Note down the connection string.
 
-## Environment variables
+Each movie's plot is ran through OpenAI's embedding API and those embeddings are stored in MongoDB. The user's prompt is embedded as well and then queried in the vector database for similar movies.
+![Semantic Text search](static/searchSimilarTextEmbeddingsOpenAI.png)
 
-Create a file `.env` in the project structure and put the connection string in:
 
-    MDB_CONN="mongodb+srv://..."
+Each movie's poster image is interpreted by `clip-ViT-B-32`. Those embeddings are stored in MongoDB. The user can find movies with poster images that are similar to their query.
+![Semantic Image search](static/searchSimilarVectorImage.png)
 
-when you plan on using OpenAI embedding for similar text search, add your API key:
+## Set-up environment
 
-    OPENAI_API_KEY=
+You need `python3` and `pip`.
 
-## Install Python
+    python3 --version
+    python3 -m ensurepip --upgrade
+    pip3 install -r requirements.txt
 
-You need Python3 and pip.
-After installing python3, run
+You need a `MongoDB Atlas` cluster. This can be a free cluster, created on [cloud.mongodb.com](https://www.mongodb.com/atlas/database). Ensure database access and network access allow you to make a connection to the database. Note free clusters have a size and performance limitation, feel free to run this on a small paid cluster with lots more data.
 
-    pip install -r requirements
+You need to set some local environment variables, this can be local `.env` file
 
-### Option 1: Just load the mongodump
+    MDB_CONN=<YOUR MongoDB Atlas connection string>
+    DB="sample_mflix"
+    COLL="embedded_movies"
+    OPENAI_API_KEY=<YOUR OpenAI API key>
 
-From the project directory, run the `mongorestore` to restore the `sample_mflix and `embedded_movies collection:
+
+## Preparing the data
+
+### Option1: Load from a backup
+
+From the project directory, run the `mongorestore` to restore the `sample_mflix and `embedded_movies collection. You will need the [MongoDB command line database tools](https://www.mongodb.com/try/download/database-tools) for this.
 
     mongorestore --uri="mongodb+srv://..."
 
 ### Option 2: Create the vector search embeddings yourself on any collection
 
-Load the sample dataset from MongoDB Atlas. Run the `util.py` utility with command line. It will download pictures for movies and for those pictures create the embeddings using the `clip-ViT-B-32` model. This might take a while. Could be optimized with multithreading locally and batch insert_manys. The logic will only process documents without embedding, this process can be resumed.
+Load the sample dataset from MongoDB Atlas. It's available with the `...` in the cluster view. When that's done, run the `util.py` utility.
 
     python util.py
 
-### Enable the relevance search and vector search in MongoDB Atlas
+Attention: It will download pictures for movies and for those pictures create the embeddings using the `clip-ViT-B-32` model. This might take a while. Could be optimized with multithreading locally and batch insert_manys.
 
-In Atlas, in the cluster view "Search" tab, enter the following JSON configuration. Use the 'default' index name and ensure to make it on the `embedded_movies` collection. It will enable dynamic full text search on fields, as well as enable the vector search indexes.
+## The good stuff: enable the relevance search and vector search in MongoDB Atlas
+
+In Atlas, in the cluster view `Search tab`, enter the following JSON configuration. Use the `default` index name and ensure to create it on the `embedded_movies` collection. This is the magic that will enable dynamic full text search on fields, as well as enable the vector search indexes. No data copy needed :o 
 
     {
     "mappings": {
@@ -65,19 +80,26 @@ In Atlas, in the cluster view "Search" tab, enter the following JSON configurati
     }
     }
 
-## Run the App
+## Time to run it
 
 This is a Flask Python3 web-app.
 
-Start the Flask app
+Start the Flask app like this
 
     flask --app app run
 
+Or with a helper just use python like this
+
+    python app.py
+
 You can access the web app at `http://localhost:5000`.
 
-You can then use the full text search from the input field to find 'any' random set of movies.
-To use the vector based search 'similar movie posters', click the button next to each picture and see what happens :)
+## Time to experiment
+
+You can now:
+
+- use the full text search from the input field to find 'any' random set of movies with relevance search
+- use the OpenAI text embeddings dearch to find movies similar to the text sentiment you enter, sounds exotic!
+- click the button on one of the movies and see 'similar movie posters', see what happens :)
 
 Trust the ML and the model. Can you guess why these pictures are similar?
-
-Cosine is recommended by the model authors. What happens when using other knn similarity?
