@@ -4,9 +4,7 @@
 
 Offering a great user Search experience in applications can be difficult, but does not need to be.
 
-This application combines several search techniques available in MongoDB on an operational dataset of movies. MongoDB is a very popular document database known for its powerful transactional and analytical capabilities on structured and semi-structured data in a JSON-like structure. The addition of relevance search and semantic vector search in the same platform and query language is very easy and simple to use, without much complexity.
-
-Vector database stores unstructured data such as text, images, or audio, in vector embeddings (high-dimensional vectors) to make it easy to find and retrieve similar objects quickly. 
+This application combines several search techniques available in MongoDB on an operational dataset of movies. MongoDB is a very popular document database known for its powerful transactional and analytical capabilities on structured and semi-structured data in a JSON-like structure. The addition of relevance search and semantic vector search in the same platform and query language is very easy and simple to use, without much complexity. As a vector database, it now also stores unstructured data such as text, images, or audio, in vector embeddings (high-dimensional vectors) to make it easy to find and retrieve similar objects quickly. 
 
 - transactional database search (`MongoDB`),
 - relevance search with MongoDB Atlas Search (`Lucene`),
@@ -17,11 +15,11 @@ Atlas Search allows relevance search and scoring capabilities based on open-sour
 ![Relevance search](static/searchRelevance.png)
 
 
-Each movie's plot is ran through OpenAI's embedding API and those embeddings are stored in MongoDB. The user's prompt is embedded as well and then queried in the vector database for similar movies.
+Each movie's plot is ran through OpenAI's embedding API and those `text-embedding-ada-002` embeddings are stored in MongoDB. The user's prompt is embedded and used to query in the vector database for similar content.
 ![Semantic Text search](static/searchSimilarTextEmbeddingsOpenAI.png)
 
 
-Each movie's poster image is interpreted by `clip-ViT-B-32`. Those embeddings are stored in MongoDB. The user can find movies with poster images that are similar to their query.
+Each movie's poster image is interpreted by `clip-ViT-B-32`. Those picture embeddings are stored in MongoDB. The user can find movies with poster images that are similar to their query.
 ![Semantic Image search](static/searchSimilarVectorImage.png)
 
 ## Set-up environment
@@ -46,7 +44,7 @@ You need to set some local environment variables, this can be local `.env` file
 
 ### Option1: Load from a backup
 
-From the project directory, run the `mongorestore` to restore the `sample_mflix and `embedded_movies collection. You will need the [MongoDB command line database tools](https://www.mongodb.com/try/download/database-tools) for this.
+Clone the [mdb-search-data repo](https://github.com/dvsander/mdb-search-data), unrar the dump and from the project directory, run the `mongorestore` to restore the `sample_mflix and `embedded_movies collection. You will need the [MongoDB command line database tools](https://www.mongodb.com/try/download/database-tools) for this.
 
     mongorestore --uri="mongodb+srv://..."
 
@@ -56,28 +54,28 @@ Load the sample dataset from MongoDB Atlas. It's available with the `...` in the
 
     python util.py
 
-Attention: It will download pictures for movies and for those pictures create the embeddings using the `clip-ViT-B-32` model. This might take a while. Could be optimized with multithreading locally and batch insert_manys.
+Attention: It will download pictures for movies and for those pictures create the embeddings using the `clip-ViT-B-32` model. This might take a while. Could be optimized with multithreading locally and batch insert_manys. It's normal that you run out of disk space around movie 3000 on the free tier, you can ignore the message.
 
 ## The good stuff: enable the relevance search and vector search in MongoDB Atlas
 
 In Atlas, in the cluster view `Search tab`, enter the following JSON configuration. Use the `default` index name and ensure to create it on the `embedded_movies` collection. This is the magic that will enable dynamic full text search on fields, as well as enable the vector search indexes. No data copy needed :o 
 
     {
-    "mappings": {
-        "dynamic": true,
-        "fields": {
-        "plot_embedding": {
-            "dimensions": 1536,
-            "similarity": "cosine",
-            "type": "knnVector"
-        },
-        "poster_embedding": {
-            "dimensions": 512,
-            "similarity": "cosine",
-            "type": "knnVector"
+        "mappings": {
+            "dynamic": true,
+            "fields": {
+                "plot_embedding": {
+                    "dimensions": 1536,
+                    "similarity": "cosine",
+                    "type": "knnVector"
+                },
+                "poster_embedding": {
+                    "dimensions": 512,
+                    "similarity": "cosine",
+                    "type": "knnVector"
+                }
+            }
         }
-        }
-    }
     }
 
 ## Time to run it
@@ -94,12 +92,10 @@ Or with a helper just use python like this
 
 You can access the web app at `http://localhost:5000`.
 
-## Time to experiment
-
 You can now:
 
 - use the full text search from the input field to find 'any' random set of movies with relevance search
 - use the OpenAI text embeddings dearch to find movies similar to the text sentiment you enter, sounds exotic!
 - click the button on one of the movies and see 'similar movie posters', see what happens :)
 
-Trust the ML and the model. Can you guess why these pictures are similar?
+Trust the ML and the embedding model. Can you guess why these pictures are similar?
