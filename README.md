@@ -1,5 +1,9 @@
 # Database search, Relevance search, Semantic embeddings search with MongoDB
 
+TL;DR: A hacked together web app with a MongoDB Atlas backend using different search queries.
+
+[Skip to the live demo'](http://ec2-13-39-13-74.eu-west-3.compute.amazonaws.com:8080) (no guarantees)
+
 ## Introduction
 
 Offering a great user Search experience in applications can be difficult, but does not need to be.
@@ -21,6 +25,10 @@ Each movie's plot is ran through OpenAI's embedding API and those `text-embeddin
 
 Each movie's poster image is interpreted by `clip-ViT-B-32`. Those picture embeddings are stored in MongoDB. The user can find movies with poster images that are similar to their query.
 ![Semantic Image search](static/searchSimilarVectorImage.png)
+
+The document structure looks as follows. In blue you have the fields, nested objects and arrays with operational data. The blue are queried with database search and Atlas Search relevance search. This projects adds the fields in yellow: a base64 representation of the movie poster, ada OpenAI text embeddings and clip image embeddings, queried with Atlas Vector Search.
+
+![Document Structure](static/documentstructure.png)
 
 ## Set-up environment
 
