@@ -42,21 +42,11 @@ You need to set some local environment variables, this can be local `.env` file
 
 ## Preparing the data
 
-### Option1: Load from a backup
+Clone the [mdb-search-data repo](https://github.com/dvsander/mdb-search-data).
 
-Clone the [mdb-search-data repo](https://github.com/dvsander/mdb-search-data), unrar the dump and from the project directory, run the `mongorestore` to restore the `sample_mflix and `embedded_movies collection. You will need the [MongoDB command line database tools](https://www.mongodb.com/try/download/database-tools) for this.
+In there you are offered 2 options: restoring from backup or generating the embeddings yourself locally.
 
-    mongorestore --uri="mongodb+srv://..."
-
-### Option 2: Create the vector search embeddings yourself on any collection
-
-Load the sample dataset from MongoDB Atlas. It's available with the `...` in the cluster view. When that's done, run the `util.py` utility.
-
-    python util.py
-
-Attention: It will download pictures for movies and for those pictures create the embeddings using the `clip-ViT-B-32` model. This might take a while. Could be optimized with multithreading locally and batch insert_manys. It's normal that you run out of disk space around movie 3000 on the free tier, you can ignore the message.
-
-## The good stuff: enable the relevance search and vector search in MongoDB Atlas
+## Enabling the relevance search and vector search in MongoDB Atlas
 
 In Atlas, in the cluster view `Search tab`, enter the following JSON configuration. Use the `default` index name and ensure to create it on the `embedded_movies` collection. This is the magic that will enable dynamic full text search on fields, as well as enable the vector search indexes. No data copy needed :o 
 
