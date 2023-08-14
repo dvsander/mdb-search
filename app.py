@@ -15,7 +15,7 @@ def search():
     searchInput = request.form['searchInput']
     searchOptions = request.form['searchOptions']
 
-    if (searchOptions == 'relevance' )
+    if (searchOptions == 'relevance' ):
         coll = getCollection()
         docs = coll.aggregate([
             {
@@ -33,7 +33,7 @@ def search():
             }
         ])
 
-    elif (searchOptions == 'similarText' )
+    elif (searchOptions == 'similarText' ):
         embedding = getOpenAIEmbedding(searchInput)
         coll = getCollection()
         docs = coll.aggregate([
