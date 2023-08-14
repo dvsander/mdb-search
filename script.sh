@@ -9,7 +9,6 @@ unzip main.zip
 cd mdb-search-main
 python3 -m venv .venv
 . .venv/bin/activate
-mkdir .venv/tmp
 
 pip3 install -r requirements.txt
 

@@ -15,38 +15,38 @@ def search():
     searchInput = request.form['searchInput']
     searchOptions = request.form['searchOptions']
 
-    match searchOptions:
-        case 'relevance':
-            coll = getCollection()
-            docs = coll.aggregate([
-                {
-                    "$search": {
-                        "text": {
-                            "query": searchInput,
-                            "path": ["plot", "full_plot", "title"],
-                            "fuzzy": {
-                                "maxEdits" : 2
-                            }
-                        }
-                    }
-                },{
-                    "$limit": 20
-                }
-            ])
-        case 'similarText':
-            embedding = getOpenAIEmbedding(searchInput)
-            coll = getCollection()
-            docs = coll.aggregate([
-                {
-                    "$search": {
-                        "knnBeta": {
-                            "vector": embedding,
-                            "path": "plot_embedding",
-                            "k": 20
+    if (searchOptions == 'relevance' )
+        coll = getCollection()
+        docs = coll.aggregate([
+            {
+                "$search": {
+                    "text": {
+                        "query": searchInput,
+                        "path": ["plot", "full_plot", "title"],
+                        "fuzzy": {
+                            "maxEdits" : 2
                         }
                     }
                 }
-            ])
+            },{
+                "$limit": 20
+            }
+        ])
+
+    elif (searchOptions == 'similarText' )
+        embedding = getOpenAIEmbedding(searchInput)
+        coll = getCollection()
+        docs = coll.aggregate([
+            {
+                "$search": {
+                    "knnBeta": {
+                        "vector": embedding,
+                        "path": "plot_embedding",
+                        "k": 20
+                    }
+                }
+            }
+        ])
 
     return render_template("home.html",movies=docs, searchInput=searchInput, searchOptions=searchOptions)
 
