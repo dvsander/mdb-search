@@ -12,9 +12,6 @@ python3 -m venv .venv
 
 pip3 install -r requirements.txt
 
-export MDB_CONN=
-export DB=
-export COLL=
-export OPENAI_API_KEY=
+export FLASK_APP=app.py
 
-python3 app.py
+flask run --host=0.0.0.0 --port=8080

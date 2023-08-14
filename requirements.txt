@@ -1,4 +1,5 @@
 pymongo
 python-dotenv
 pymongoarrow
+requests
 Flask==2.3.2
