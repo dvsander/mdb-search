@@ -7,14 +7,22 @@
                         {% if searchOptions is not defined or searchOptions == "relevance"  %}
                             checked="true"
                         {% endif %}>
-                    <label class="form-check-label" for="searchRelevance">Relevance (Lucene)</label>
+                    <label class="form-check-label" for="searchRelevance">Relevance (Full Text Search)</label>
                   </div>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="searchOptions" id="inlineRadio2" value="similarText"
-                        {% if searchOptions == "similarText"  %}
+                    <input class="form-check-input" type="radio" name="searchOptions" id="inlineRadio2" value="semanticText"
+                        {% if searchOptions == "semanticText"  %}
                                 checked="true"
                             {% endif %}>
-                    <label class="form-check-label" for="searchSimilar">Similar (Text OpenAI)</label>
+                    <label class="form-check-label" for="searchSemantic">Semantic (Vector Search with OpenAI Ada)</label>
+                  </div>
+                  
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="searchOptions" id="inlineRadio2" value="similarText" disabled="true"
+                        {% if searchOptions == "similarText"  %}
+                            checked="true"
+                        {% endif %}>
+                    <label class="form-check-label" for="searchSimilarText">Similar Text (OpenAI Ada)</label>
                   </div>
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="searchOptions" id="inlineRadio2" value="similarImage" disabled="true"
@@ -43,7 +51,7 @@
     {% if similarto %}
     <div class="row">
         <div class="col-3">
-            <p>Vector search based on image:</p>
+            <p>Similarity search based on:</p>
         </div>
         <div class="col-9">
             {% with movie=similarto %}
