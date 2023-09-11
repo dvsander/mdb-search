@@ -1,5 +1,19 @@
 <div class="container border-bottom-5">
     <form action="/search" method="post">
+       
+        <div class="row">
+            <div class="col-9">
+                <input type="text" class="form-control" id="searchInput" name="searchInput"
+                {% if searchInput  %}
+                    value="{{searchInput}}"
+                {% endif %}>
+            </div>
+            <div class="col-3">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+
+
         <div class="row">
             <div class="col-3">
                 <div class="form-check form-check-inline">
@@ -7,42 +21,35 @@
                         {% if searchOptions is not defined or searchOptions == "relevance"  %}
                             checked="true"
                         {% endif %}>
-                    <label class="form-check-label" for="searchRelevance">Relevance (Full Text Search)</label>
+                    <label class="form-check-label" for="searchRelevance"><strong>Relevance</strong><p>user input with Full Text Search</p></label>
                   </div>
+                </div>
+                  <div class="col-3">
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="searchOptions" id="inlineRadio2" value="semanticText"
                         {% if searchOptions == "semanticText"  %}
                                 checked="true"
                             {% endif %}>
-                    <label class="form-check-label" for="searchSemantic">Semantic (Vector Search with OpenAI Ada)</label>
+                    <label class="form-check-label" for="searchSemantic"><strong>Semantic</strong><p>user input with Vector Search using OpenAI Ada</p></label>
                   </div>
-                  
+                </div>
+                  <div class="col-3">
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="searchOptions" id="inlineRadio2" value="similarText" disabled="true"
                         {% if searchOptions == "similarText"  %}
                             checked="true"
                         {% endif %}>
-                    <label class="form-check-label" for="searchSimilarText">Similar Text (OpenAI Ada)</label>
+                    <label class="form-check-label" for="searchSimilarText"><strong>Similar Plot Text</strong><p>selected movie plot text with Vector Search using OpenAI Ada</p></label>
                   </div>
+                </div>
+                  <div class="col-3">
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="searchOptions" id="inlineRadio2" value="similarImage" disabled="true"
                         {% if searchOptions == "similarImage"  %}
                             checked="true"
                         {% endif %}>
-                    <label class="form-check-label" for="searchSimilar">Similar (Image clip-ViT-B-3)</label>
+                    <label class="form-check-label" for="searchSimilar"><strong>Similar Poster Image</strong><p>selected movie poster image with Vector Search using Image clip-ViT-B-3</p></label>
                   </div>
-            </div>
-            <div class="col-9">
-                <div class="row">
-                    <div class="col-9">
-                        <input type="text" class="form-control" id="searchInput" name="searchInput"
-                        {% if searchInput  %}
-                            value="{{searchInput}}"
-                        {% endif %}>
-                    </div>
-                    <div class="col-3">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -51,9 +58,10 @@
     {% if similarto %}
     <div class="row">
         <div class="col-3">
-            <p>Similarity search based on:</p>
+            <p><a href="{{ url_for('hello_world') }}">(Reset)</a>Similarity search based on:</p>
         </div>
         <div class="col-9">
+            
             {% with movie=similarto %}
                 {% include "movieTile.html" %}
             {% endwith %}

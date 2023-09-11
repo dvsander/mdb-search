@@ -19,7 +19,7 @@ Atlas Search allows relevance search and scoring capabilities based on open-sour
 ![Relevance search](static/searchRelevance.png)
 
 
-Each movie's plot is ran through OpenAI's embedding API and those `text-embedding-ada-002` embeddings are stored in MongoDB. The user's prompt is embedded and used to query in the vector database for similar content.
+Each movie's text plot is ran through OpenAI's embedding API and those `text-embedding-ada-002` embeddings are stored in MongoDB. The user's prompt is embedded and used to query in the vector database for similar content. You can search either on your input, or do a similarity search based on an existing movie's plot.
 ![Semantic Text search](static/searchSimilarTextEmbeddingsOpenAI.png)
 
 
