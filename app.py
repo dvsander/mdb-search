@@ -33,7 +33,7 @@ def search():
             }
         ])
 
-    elif (searchOptions == 'similarText' ):
+    elif (searchOptions == 'semanticText' ):
         embedding = getOpenAIEmbedding(searchInput)
         coll = getCollection()
         docs = coll.aggregate([
@@ -50,8 +50,8 @@ def search():
 
     return render_template("home.html",movies=docs, searchInput=searchInput, searchOptions=searchOptions)
 
-@app.route("/similar/<movieId>")
-def findSimilarMoviesTos(movieId):
+@app.route("/similarImage/<movieId>")
+def findSimilarPostersTos(movieId):
     coll = getCollection()
 
     doc = coll.find_one({"_id" : ObjectId(movieId)})
@@ -69,6 +69,26 @@ def findSimilarMoviesTos(movieId):
         }
     ])
     return render_template("home.html",movies=docs,similarto=doc,searchOptions='similarImage')
+
+@app.route("/similarText/<movieId>")
+def findSimilarMoviesTos(movieId):
+    coll = getCollection()
+
+    doc = coll.find_one({"_id" : ObjectId(movieId)})
+
+    docs = coll.aggregate([
+        {
+            "$search": {
+                "index": "default",
+                "knnBeta": {
+                    "vector": doc["plot_embedding"],
+                    "path": "plot_embedding",
+                    "k": 20
+                }
+            }
+        }
+    ])
+    return render_template("home.html",movies=docs,similarto=doc,searchOptions='similarText')
 
 @app.route("/")
 def hello_world():

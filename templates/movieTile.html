@@ -11,7 +11,8 @@
                 <p class="card-text">{{movie.plot}}</p>
                 <p class="card-text">
                     <small class="text-body-secondary">
-                        <a class="btn btn-primary" href="/similar/{{ movie._id }}" role="button">Find similar!</a>
+                        <a class="btn btn-primary" href="/similarText/{{ movie._id }}" role="button">Find similar movies</a>
+                        <a class="btn btn-secondary" href="/similarImage/{{ movie._id }}" role="button">Find similar posters</a>
                     </small>
                 </p>
                 <p class="card-text">
