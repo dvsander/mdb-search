@@ -36,16 +36,15 @@ def search():
     elif (searchOptions == 'semanticText' ):
         embedding = getOpenAIEmbedding(searchInput)
         coll = getCollection()
+
         docs = coll.aggregate([
-            {
-                "$search": {
-                    "knnBeta": {
-                        "vector": embedding,
-                        "path": "plot_embedding",
-                        "k": 20
-                    }
-                }
-            }
+            { "$vectorSearch": {
+                "index": "default",
+                "queryVector": embedding,
+                "path": "plot_embedding",
+                "numCandidates": 100,
+                "limit": 21
+            }}
         ])
 
     return render_template("home.html",movies=docs, searchInput=searchInput, searchOptions=searchOptions)
@@ -57,16 +56,13 @@ def findSimilarPostersTos(movieId):
     doc = coll.find_one({"_id" : ObjectId(movieId)})
 
     docs = coll.aggregate([
-        {
-            "$search": {
-                "index": "default",
-                "knnBeta": {
-                    "vector": doc["poster_embedding"],
-                    "path": "poster_embedding",
-                    "k": 20
-                }
-            }
-        }
+        {"$vectorSearch": {
+            "index": "default",
+            "path": "poster_embedding",
+            "queryVector": doc["poster_embedding"],
+            "numCandidates": 200,
+            "limit": 21
+        }}
     ])
     return render_template("home.html",movies=docs,similarto=doc,searchOptions='similarImage')
 
@@ -77,16 +73,13 @@ def findSimilarMoviesTos(movieId):
     doc = coll.find_one({"_id" : ObjectId(movieId)})
 
     docs = coll.aggregate([
-        {
-            "$search": {
-                "index": "default",
-                "knnBeta": {
-                    "vector": doc["plot_embedding"],
-                    "path": "plot_embedding",
-                    "k": 20
-                }
-            }
-        }
+        {"$vectorSearch": {
+            "index": "default",
+            "path": "plot_embedding",
+            "queryVector": doc["plot_embedding"],
+            "numCandidates": 200,
+            "limit": 21
+        }}
     ])
     return render_template("home.html",movies=docs,similarto=doc,searchOptions='similarText')
 
