@@ -1,5 +1,6 @@
 pymongo
 python-dotenv
+sentence-transformers
 pymongoarrow
 requests
 Flask==2.3.2
