@@ -6,10 +6,12 @@ load_dotenv()
 
 from database import getCollection
 from controller import getOpenAIEmbedding
+from utils import auth_required
 
 app = Flask(__name__)
 
 @app.route("/search", methods=['GET', 'POST'])
+@auth_required
 def search():
     docs = []
     searchInput = request.form['searchInput']
@@ -38,60 +40,62 @@ def search():
         coll = getCollection()
         docs = coll.aggregate([
             {
-                "$search": {
-                    "knnBeta": {
-                        "vector": embedding,
-                        "path": "plot_embedding",
-                        "k": 20
-                    }
+                "$vectorSearch": {
+                    "index": "default",
+                    "queryVector": embedding,
+                    "path": "plot_embedding",
+                    "numCandidates": 200,
+                    "limit": 20
+                    #"filter": []
                 }
             }
         ])
-
+ 
     return render_template("home.html",movies=docs, searchInput=searchInput, searchOptions=searchOptions)
 
 @app.route("/similarImage/<movieId>")
+@auth_required
 def findSimilarPostersTos(movieId):
     coll = getCollection()
-
     doc = coll.find_one({"_id" : ObjectId(movieId)})
 
     docs = coll.aggregate([
         {
-            "$search": {
+            "$vectorSearch": {
                 "index": "default",
-                "knnBeta": {
-                    "vector": doc["poster_embedding"],
-                    "path": "poster_embedding",
-                    "k": 20
-                }
+                "queryVector": doc["poster_embedding"],
+                "path": "poster_embedding",
+                "numCandidates": 200,
+                "limit": 20,
+                #"filter": []
             }
         }
     ])
     return render_template("home.html",movies=docs,similarto=doc,searchOptions='similarImage')
 
 @app.route("/similarText/<movieId>")
+@auth_required
 def findSimilarMoviesTos(movieId):
     coll = getCollection()
-
     doc = coll.find_one({"_id" : ObjectId(movieId)})
 
     docs = coll.aggregate([
         {
-            "$search": {
+            "$vectorSearch": {
                 "index": "default",
-                "knnBeta": {
-                    "vector": doc["plot_embedding"],
-                    "path": "plot_embedding",
-                    "k": 20
-                }
+                "queryVector": doc["plot_embedding"],
+                "path": "plot_embedding",
+                "numCandidates": 200,
+                "limit": 20,
+                #"filter": []
             }
         }
     ])
     return render_template("home.html",movies=docs,similarto=doc,searchOptions='similarText')
 
 @app.route("/")
-def hello_world():
+@auth_required
+def home():
     coll = getCollection()
     docs = coll.find({}, limit=20)
 
@@ -102,4 +106,4 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", debug=False, port=8080)

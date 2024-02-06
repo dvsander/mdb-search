@@ -2,7 +2,7 @@
 
 TL;DR: A hacked together web app with a MongoDB Atlas backend using different search queries.
 
-[Skip to the live demo'](http://ec2-13-39-13-74.eu-west-3.compute.amazonaws.com:8080) (no guarantees)
+[Skip to the live demo'](http://mdb-search-lb-1487448759.eu-west-3.elb.amazonaws.com/) (Username and password are in the .env.example, to avoid bots)
 
 ## Introduction
 
@@ -46,6 +46,8 @@ You need to set some local environment variables, this can be local `.env` file
     DB="sample_mflix"
     COLL="embedded_movies"
     OPENAI_API_KEY=<YOUR OpenAI API key>
+    SITE_USER=<a preferred username to log in with>
+    SITE_PASS=<a preferred password to log in with>
 
 
 ## Preparing the data
