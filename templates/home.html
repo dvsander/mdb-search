@@ -9,9 +9,21 @@
     </head>
     <body>
         <div class="container">
-            <h1 class="text-center">Searching <i>anything</i> in MongoDB</h1>
-            {% include 'searchForm.html' %}
+            <h1 class="text-center"><a href="/">Search <i>anything</i> in MongoDB</a></h1>
+            <div class="row">
+                <div class="col-9">
+                    {% include 'searchForm.html' %}
+                </div>
+                <div class="col-3">
+                    {% include 'newMovie.html' %}
+                </div>
+            </div>
+            
             <div class="divider py-1 bg-dark"></div>
+            {% if desc %}
+            <div class="container">{{desc}}</div>
+            <div class="divider py-1 bg-dark"></div>
+            {% endif %}
             <div class="container">
                 <div class="row">
                     {% for movie in movies %}
