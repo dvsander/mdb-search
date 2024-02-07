@@ -20,6 +20,10 @@
             </div>
             
             <div class="divider py-1 bg-dark"></div>
+            {% if desc %}
+            <div class="container">{{desc}}</div>
+            <div class="divider py-1 bg-dark"></div>
+            {% endif %}
             <div class="container">
                 <div class="row">
                     {% for movie in movies %}

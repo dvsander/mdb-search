@@ -12,16 +12,21 @@ from sentence_transformers import SentenceTransformer
 from PIL import Image, ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 from io import BytesIO
+import openai
 
 app = Flask(__name__)
 
 model = SentenceTransformer('clip-ViT-B-32')
+openai_client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 @app.route("/search", methods=['GET', 'POST'])
 def search():
     docs = []
     searchInput = request.form['searchInput']
     searchOptions = request.form['searchOptions']
+    generateDescription = request.form.get("generateDescription")
+    
+    print(generateDescription)
 
     if (searchOptions == 'relevance' ):
         coll = getCollection()
@@ -40,6 +45,7 @@ def search():
                 "$limit": 20
             }
         ])
+        return render_template("home.html",movies=docs, searchInput=searchInput, searchOptions=searchOptions)
 
     elif (searchOptions == 'semanticText' ):
         embedding = getOpenAIEmbedding(searchInput)
@@ -55,7 +61,26 @@ def search():
             }}
         ])
 
-    return render_template("home.html",movies=docs, searchInput=searchInput, searchOptions=searchOptions)
+
+        docs = [d for d in docs]
+
+        if generateDescription is not None:
+            first_three = docs[0:3]
+            ctx = [ {"role": "system", "content": "Film %d // Title: %s // Plot: %s" % (i, d["title"], d["plot"])} for i, d in enumerate(first_three) ]
+
+            messages = [{"role": "system", "content": "You are a movie selection assistant. Every query you get is about finding movies. You will be given a question and a list of movies that match. Answer by giving a short paragraph recapitulating the question, then suggesting each of the provided movies by paraphrasing the provided plot and highlighting how it corresponds to the question. Very important: mention all the movies listed below. Do not, under any circumstance, mention any movie that is not in the following list. It is critically important that you do not answer questions not related to movies."}]
+            messages = messages + ctx
+            messages = messages + [ {"role": "user", "content": "Question: %s" % searchInput} ]
+            completion = openai_client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=messages
+            )
+            desc = completion.choices[0].message.content
+        else:
+            desc = None
+        return render_template("home.html",movies=docs, searchInput=searchInput, searchOptions=searchOptions, desc=desc)
+
+    
 
 @app.route("/new", methods=["POST"])
 def new():
