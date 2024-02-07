@@ -116,7 +116,6 @@ def downloadImageAsBase64(url):
 @app.route("/similarImage/<movieId>")
 def findSimilarPostersTos(movieId):
     coll = getCollection()
-
     doc = coll.find_one({"_id" : ObjectId(movieId)})
 
     docs = coll.aggregate([
@@ -133,7 +132,6 @@ def findSimilarPostersTos(movieId):
 @app.route("/similarText/<movieId>")
 def findSimilarMoviesTos(movieId):
     coll = getCollection()
-
     doc = coll.find_one({"_id" : ObjectId(movieId)})
 
     docs = coll.aggregate([
@@ -148,7 +146,7 @@ def findSimilarMoviesTos(movieId):
     return render_template("home.html",movies=docs,similarto=doc,searchOptions='similarText')
 
 @app.route("/")
-def hello_world():
+def home():
     coll = getCollection()
     docs = coll.find({}, limit=20)
 
@@ -159,4 +157,4 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", debug=False, port=8080)
