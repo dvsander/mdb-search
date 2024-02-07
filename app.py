@@ -91,9 +91,12 @@ def new():
     poster_b64 = downloadImageAsBase64(poster)
     poster_embedding = model.encode(Image.open(BytesIO(base64.b64decode(poster_b64))), convert_to_numpy=True)
 
+    plot_embedding = getOpenAIEmbedding(plot)
+
     doc = {
         "title": title,
         "plot": plot,
+        "plot_embedding": plot_embedding,
         "demoAdded": True,
         "poster_blob": poster_b64,
         "poster_embedding": poster_embedding.tolist()
