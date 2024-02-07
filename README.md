@@ -2,7 +2,7 @@
 
 TL;DR: A hacked together web app with a MongoDB Atlas backend using different search queries.
 
-[Skip to the live demo'](http://mdb-search-lb-1487448759.eu-west-3.elb.amazonaws.com/) (Username and password are in the .env.example, to avoid bots)
+The live demo has been shut down after 9 months, thanks for all the feedback and support. The local set-up can be done in 10 minutes.
 
 ## Introduction
 
@@ -40,21 +40,18 @@ You need `python3` and `pip`.
 
 You need a `MongoDB Atlas` cluster. This can be a free cluster, created on [cloud.mongodb.com](https://www.mongodb.com/atlas/database). Ensure database access and network access allow you to make a connection to the database. Note free clusters have a size and performance limitation, feel free to run this on a small paid cluster with lots more data.
 
-You need to set some local environment variables, this can be local `.env` file
+You need to set some local environment variables. The template is `.env.example` which you can copy to your local `.env` file.
 
     MDB_CONN=<YOUR MongoDB Atlas connection string>
     DB="sample_mflix"
     COLL="embedded_movies"
     OPENAI_API_KEY=<YOUR OpenAI API key>
-    SITE_USER=<a preferred username to log in with>
-    SITE_PASS=<a preferred password to log in with>
-
 
 ## Preparing the data
 
 Clone the [mdb-search-data repo](https://github.com/dvsander/mdb-search-data).
 
-In there you are offered 2 options: restoring from backup or generating the embeddings yourself locally.
+In there you are offered 2 options: restoring from backup or generating the embeddings yourself locally. Restoring from backup takes less than 1 minute.
 
 ## Enabling the relevance search and vector search in MongoDB Atlas
 
@@ -90,7 +87,7 @@ Or with a helper just use python like this
 
     python app.py
 
-You can access the web app at `http://localhost:5000`.
+You can access the web app at `http://localhost:8080`.
 
 You can now:
 

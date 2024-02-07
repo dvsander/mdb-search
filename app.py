@@ -6,12 +6,10 @@ load_dotenv()
 
 from database import getCollection
 from controller import getOpenAIEmbedding
-from utils import auth_required
 
 app = Flask(__name__)
 
 @app.route("/search", methods=['GET', 'POST'])
-@auth_required
 def search():
     docs = []
     searchInput = request.form['searchInput']
@@ -54,7 +52,6 @@ def search():
     return render_template("home.html",movies=docs, searchInput=searchInput, searchOptions=searchOptions)
 
 @app.route("/similarImage/<movieId>")
-@auth_required
 def findSimilarPostersTos(movieId):
     coll = getCollection()
     doc = coll.find_one({"_id" : ObjectId(movieId)})
@@ -74,7 +71,6 @@ def findSimilarPostersTos(movieId):
     return render_template("home.html",movies=docs,similarto=doc,searchOptions='similarImage')
 
 @app.route("/similarText/<movieId>")
-@auth_required
 def findSimilarMoviesTos(movieId):
     coll = getCollection()
     doc = coll.find_one({"_id" : ObjectId(movieId)})
@@ -94,7 +90,6 @@ def findSimilarMoviesTos(movieId):
     return render_template("home.html",movies=docs,similarto=doc,searchOptions='similarText')
 
 @app.route("/")
-@auth_required
 def home():
     coll = getCollection()
     docs = coll.find({}, limit=20)
