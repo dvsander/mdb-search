@@ -2,8 +2,6 @@
 
 TL;DR: A hacked together web app with a MongoDB Atlas backend using different search queries.
 
-The live demo has been shut down after 9 months, thanks for all the feedback and support. The local set-up can be done in 10 minutes.
-
 ## Introduction
 
 Offering a great user Search experience in applications can be difficult, but does not need to be.
